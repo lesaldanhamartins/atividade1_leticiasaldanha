@@ -26,12 +26,12 @@ st.set_page_config(
 
 connection_parameters = {
     "account": st.secrets["snowflake"]["account"],
+    "password": st.secrets["snowflake"]["password"],
     "user": st.secrets["snowflake"]["user"],
     "warehouse": st.secrets["snowflake"]["warehouse"],
     "database": "TEST_DB",
     "schema": "PUBLIC",
-    "role": st.secrets["snowflake"]["role"],
-    "authenticator": "externalbrowser"
+    "role": st.secrets["snowflake"]["role"]
 }
 
 # ==========================
