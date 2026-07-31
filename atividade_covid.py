@@ -36,12 +36,9 @@ connection_parameters = {
     "account": st.secrets["snowflake"]["account"],
     "password": st.secrets["snowflake"]["password"],
     "user": st.secrets["snowflake"]["user"],
-
     "warehouse": st.secrets["snowflake"]["warehouse"],
-
-    "database": "TEST_DB",
-    "schema": "PUBLIC",
-
+    "database": st.secrets["snowflake"]["database"],
+    "schema": st.secrets["snowflake"]["schema"],
     "role": st.secrets["snowflake"]["role"]
 
 }
