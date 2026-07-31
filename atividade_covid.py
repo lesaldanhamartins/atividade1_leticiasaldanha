@@ -46,17 +46,9 @@ connection_parameters = {
 
 def criar_sessao():
 
-    session = Session.builder.configs(
+    return Session.builder.configs(
         connection_parameters
     ).create()
-
-    resultado = session.sql(
-        "SELECT CURRENT_ACCOUNT(), CURRENT_DATABASE(), CURRENT_SCHEMA(), CURRENT_ROLE()"
-    ).collect()
-
-    st.write(resultado)
-
-    return session
 
 
 
