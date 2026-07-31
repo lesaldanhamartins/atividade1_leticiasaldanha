@@ -53,13 +53,11 @@ def criar_sessao():
         connection_parameters
     ).create()
 
-    session.sql(
-        "USE DATABASE TEST_DB"
+    resultado = session.sql(
+        "SELECT CURRENT_ACCOUNT(), CURRENT_DATABASE(), CURRENT_SCHEMA(), CURRENT_ROLE()"
     ).collect()
 
-    session.sql(
-        "USE SCHEMA PUBLIC"
-    ).collect()
+    st.write(resultado)
 
     return session
 
