@@ -49,9 +49,19 @@ connection_parameters = {
 
 def criar_sessao():
 
-    return Session.builder.configs(
+    session = Session.builder.configs(
         connection_parameters
     ).create()
+
+    session.sql(
+        "USE DATABASE TEST_DB"
+    ).collect()
+
+    session.sql(
+        "USE SCHEMA PUBLIC"
+    ).collect()
+
+    return session
 
 
 
@@ -97,9 +107,12 @@ if st.sidebar.button("■ Carregar Dados no Snowflake"):
             ]
 
 
-            df_filtrado = df[
-                df["continent"].isin(continentes)
-            ]
+            df_filtrado = (
+                df[
+                    df["continent"].isin(continentes)
+                ]
+                .reset_index(drop=True)
+            )
 
 
             session = criar_sessao()
@@ -109,11 +122,11 @@ if st.sidebar.button("■ Carregar Dados no Snowflake"):
                 df_filtrado
             )
 
-
+            
             sp_df.write.mode(
                 "overwrite"
             ).save_as_table(
-                TABELA_COVID
+                "TEST_DB.PUBLIC.DADOS_COVID_FILTRADOS"
             )
 
 
