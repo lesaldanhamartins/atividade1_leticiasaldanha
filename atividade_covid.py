@@ -24,7 +24,7 @@ st.set_page_config(
 # CONSTANTES SNOWFLAKE
 # ==========================
 
-TABELA_COVID = "SNOWFLAKE_LEARNING_DB.PUBLIC.DADOS_COVID_FILTRADOS"
+TABELA_COVID = "TEST_DB.PUBLIC.DADOS_COVID_FILTRADOS"
 
 
 # ==========================
@@ -113,7 +113,7 @@ if st.sidebar.button("■ Carregar Dados no Snowflake"):
             sp_df.write.mode(
                 "overwrite"
             ).save_as_table(
-                "SNOWFLAKE_LEARNING_DB.PUBLIC.DADOS_COVID_FILTRADOS"
+                "TEST_DB.PUBLIC.DADOS_COVID_FILTRADOS"
             )
 
 
@@ -145,7 +145,7 @@ if st.sidebar.button("■ Carregar Dashboard"):
         # Verifica se a tabela existe antes de tentar carregar
 
         tabelas = session.sql(
-            "SHOW TABLES LIKE 'DADOS_COVID_FILTRADOS' IN SCHEMA SNOWFLAKE_LEARNING_DB.PUBLIC"
+            "SHOW TABLES LIKE 'DADOS_COVID_FILTRADOS' IN SCHEMA TEST_DB.PUBLIC"
         ).collect()
 
 
