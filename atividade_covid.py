@@ -212,8 +212,47 @@ df = st.session_state.df
 st.sidebar.header("Filtros")
 
 
+# --------------------------
+# Filtro por continente
+# --------------------------
+
+lista_continentes = sorted(
+    df["continent"]
+    .dropna()
+    .unique()
+)
+
+
+continente_selecionado = st.sidebar.multiselect(
+
+    "Selecione o(s) continente(s)",
+
+    lista_continentes,
+
+    default=[
+        "Asia",
+        "Africa",
+        "South America"
+    ]
+
+)
+
+
+# Filtra pelo continente escolhido
+
+df_continente = df[
+    df["continent"].isin(
+        continente_selecionado
+    )
+]
+
+
+# --------------------------
+# Filtro por país
+# --------------------------
+
 lista_paises = sorted(
-    df["location"]
+    df_continente["location"]
     .dropna()
     .unique()
 )
@@ -221,76 +260,35 @@ lista_paises = sorted(
 
 paises_padrao = [
     "Brazil",
-    "Argentina",
-    "Chile"
+    "India",
+    "Japan"
 ]
+
+
+# mantém somente países existentes
+paises_padrao = [
+    p for p in paises_padrao
+    if p in lista_paises
+]
+
 
 paises = st.sidebar.multiselect(
+
     "Selecione os países",
+
     lista_paises,
+
     default=paises_padrao
+
 )
 
 
-df_filtrado = df[
-    df["location"].isin(paises)
+# Aplica filtro final
+
+df_filtrado = df_continente[
+    df_continente["location"]
+    .isin(paises)
 ]
-
-
-
-# ==========================
-# KPIs
-# ==========================
-
-st.title(
-    "Dashboard COVID-19"
-)
-
-
-col1, col2, col3 = st.columns(3)
-
-
-
-total_casos = int(
-    df_filtrado["new_cases"]
-    .fillna(0)
-    .sum()
-)
-
-
-total_obitos = int(
-    df_filtrado["total_deaths"]
-    .fillna(0)
-    .max()
-)
-
-
-numero_paises = (
-    df_filtrado["location"]
-    .nunique()
-)
-
-
-
-col1.metric(
-    "Total de Casos",
-    f"{total_casos:,}"
-)
-
-
-col2.metric(
-    "Total de Óbitos",
-    f"{total_obitos:,}"
-)
-
-
-col3.metric(
-    "Países Analisados",
-    numero_paises
-)
-
-
-
 # ==========================
 # ABAS
 # ==========================
