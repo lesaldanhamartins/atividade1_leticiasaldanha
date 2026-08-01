@@ -390,25 +390,52 @@ with tab3:
 
         df_cont = df_filtrado[
             df_filtrado["continent"] == continente
-        ]
+        ].copy()
+
+
+        # Remove valores vazios
+        df_cont = df_cont.dropna(
+            subset=[
+                "people_fully_vaccinated_per_hundred"
+            ]
+        )
+
+
+        if len(df_cont) == 0:
+
+            st.warning(
+                f"Não existem dados de vacinação para {continente}"
+            )
+
+            continue
+
+
+        # Pega o último valor disponível de cada país
+        ultimo_valor = (
+            df_cont
+            .sort_values("date")
+            .groupby("location")
+            .tail(1)
+        )
 
 
         vacinados = (
-            df_cont[
+            ultimo_valor[
                 "people_fully_vaccinated_per_hundred"
             ]
             .mean()
         )
 
 
-        if pd.isna(vacinados):
+        vacinados = round(
+            vacinados,
+            2
+        )
 
-            vacinados = 0
 
-
-        nao_vacinados = max(
-            0,
-            100 - vacinados
+        nao_vacinados = round(
+            100 - vacinados,
+            2
         )
 
 
@@ -458,7 +485,6 @@ with tab3:
             fig,
             use_container_width=True
         )
-
 
 
 # ==========================
