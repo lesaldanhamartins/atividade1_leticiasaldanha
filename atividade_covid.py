@@ -219,14 +219,16 @@ lista_paises = sorted(
 )
 
 
+paises_padrao = [
+    "Brazil",
+    "India",
+    "Japan"
+]
+
 paises = st.sidebar.multiselect(
-
     "Selecione os países",
-
     lista_paises,
-
-    default=lista_paises
-
+    default=paises_padrao
 )
 
 
