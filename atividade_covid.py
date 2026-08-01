@@ -221,7 +221,8 @@ continente_selecionado = st.sidebar.multiselect(
 
     default=[
         "South America",
-        "North America"
+        "North America",
+        "Europe"
     ]
 
 )
@@ -248,8 +249,9 @@ lista_paises = sorted(
 
 paises_padrao = [
     "Brazil",
+    "Peru",
     "United States",
-    "Mexico"
+    "Sweden"
 ]
 
 
