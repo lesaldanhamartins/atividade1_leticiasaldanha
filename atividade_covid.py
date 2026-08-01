@@ -375,118 +375,112 @@ with tab2:
 
 
 # ==========================
-# TAB 3
+# TAB 3 - VACINAÇÃO DOS PAÍSES SELECIONADOS
 # ==========================
 
 with tab3:
 
-    continentes = [
-        "Asia",
-        "Africa",
-        "South America"
-    ]
+    st.subheader(
+        "Percentual de vacinação dos países selecionados"
+    )
 
 
-    for continente in continentes:
+    df_vacina = df_filtrado.copy()
 
 
-        df_cont = df_filtrado[
-            df_filtrado["continent"] == continente
-        ].copy()
+    # Remove países sem dados de vacinação
+    df_vacina = df_vacina.dropna(
+        subset=[
+            "people_fully_vaccinated_per_hundred"
+        ]
+    )
 
 
-        # Remove valores vazios
-        df_cont = df_cont.dropna(
-            subset=[
-                "people_fully_vaccinated_per_hundred"
-            ]
+    if df_vacina.empty:
+
+        st.warning(
+            "Não existem dados de vacinação para os países selecionados."
         )
 
 
-        if len(df_cont) == 0:
-
-            st.warning(
-                f"Não existem dados de vacinação para {continente}"
-            )
-
-            continue
+    else:
 
 
-        # Pega o último valor disponível de cada país
-        ultimo_valor = (
-            df_cont
+        # Pega o último registro disponível de cada país
+        ultimo_vacina = (
+            df_vacina
             .sort_values("date")
             .groupby("location")
             .tail(1)
         )
 
 
-        vacinados = (
-            ultimo_valor[
-                "people_fully_vaccinated_per_hundred"
-            ]
-            .mean()
-        )
+        for _, linha in ultimo_vacina.iterrows():
 
 
-        vacinados = round(
-            vacinados,
-            2
-        )
+            pais = linha["location"]
 
 
-        nao_vacinados = round(
-            100 - vacinados,
-            2
-        )
-
-
-        df_pizza = pd.DataFrame({
-
-            "Status": [
-                "Vacinados",
-                "Não vacinados"
-            ],
-
-            "Percentual": [
-                vacinados,
-                nao_vacinados
-            ]
-
-        })
-
-
-        fig = px.pie(
-
-            df_pizza,
-
-            names="Status",
-
-            values="Percentual",
-
-            title=f"{continente} - Vacinação"
-
-        )
-
-
-        fig.update_traces(
-
-            textinfo="label+percent",
-
-            marker=dict(
-                colors=[
-                    "green",
-                    "red"
-                ]
+            vacinados = round(
+                linha[
+                    "people_fully_vaccinated_per_hundred"
+                ],
+                2
             )
 
-        )
+
+            nao_vacinados = round(
+                100 - vacinados,
+                2
+            )
 
 
-        st.plotly_chart(
-            fig,
-            use_container_width=True
-        )
+            df_pizza = pd.DataFrame({
+
+                "Status": [
+                    "Vacinados",
+                    "Não vacinados"
+                ],
+
+                "Percentual": [
+                    vacinados,
+                    nao_vacinados
+                ]
+
+            })
+
+
+            fig = px.pie(
+
+                df_pizza,
+
+                names="Status",
+
+                values="Percentual",
+
+                title=f"{pais} - Vacinação"
+
+            )
+
+
+            fig.update_traces(
+
+                textinfo="label+percent",
+
+                marker=dict(
+                    colors=[
+                        "green",
+                        "red"
+                    ]
+                )
+
+            )
+
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
 
 
 # ==========================
