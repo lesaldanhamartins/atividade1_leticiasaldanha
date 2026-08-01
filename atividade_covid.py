@@ -87,42 +87,32 @@ if st.sidebar.button("■ Carregar Dados no Snowflake"):
             df = pd.read_csv(url)
 
 
-            continentes = [
-                "Asia",
-                "Africa",
-                "South America"
-            ]
-
-
-            df_filtrado = (
-                df[
-                    df["continent"].isin(continentes)
-                ]
-                .reset_index(drop=True)
-            )
-
-
+            # Remove apenas linhas sem continente
+            # (mantém o dataset completo)
+            df = df.dropna(
+                subset=["continent"]
+            ).reset_index(drop=True)
+            
+            
             session = criar_sessao()
-
-
-            sp_df = session.create_dataframe(
-                df_filtrado
-            )
-
+            
+            
+            sp_df = session.create_dataframe(df)
+            
             
             sp_df.write.mode(
                 "overwrite"
             ).save_as_table(
-                "TEST_DB.PUBLIC.DADOS_COVID_FILTRADOS"
+                TABELA_COVID
             )
-
-
+            
+            
             session.close()
-
-
-        st.success(
-            "Dados carregados com sucesso no Snowflake!"
-        )
+            
+            
+            st.success(
+                "Dados completos carregados no Snowflake!"
+            )
 
 
     except Exception as e:
