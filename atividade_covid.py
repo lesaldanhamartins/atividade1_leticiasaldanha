@@ -1,7 +1,3 @@
-# ==========================
-# IMPORTS
-# ==========================
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -9,27 +5,14 @@ import numpy as np
 
 from snowflake.snowpark import Session
 
-
-# ==========================
-# CONFIGURAÇÃO DA PÁGINA
-# ==========================
-
 st.set_page_config(
     page_title="Atividade 1 - Leticia Saldanha Martins",
     layout="wide"
 )
 
 
-# ==========================
-# CONSTANTES SNOWFLAKE
-# ==========================
-
 TABELA_COVID = "TEST_DB.PUBLIC.DADOS_COVID_FILTRADOS"
 
-
-# ==========================
-# CONEXÃO SNOWFLAKE
-# ==========================
 
 connection_parameters = {
 
@@ -51,11 +34,7 @@ def criar_sessao():
     ).create()
 
 
-
-# ==========================
 # DATASET
-# ==========================
-
 url = (
     "https://raw.githubusercontent.com/"
     "owid/covid-19-data/master/public/data/"
@@ -64,18 +43,14 @@ url = (
 
 
 
-# ==========================
-# SIDEBAR
-# ==========================
 
+# SIDEBAR
 st.sidebar.header("Ações")
 
 
 
-# ==========================
-# CARREGAR DADOS NO SNOWFLAKE
-# ==========================
 
+# CARREGAR DADOS NO SNOWFLAKE
 if st.sidebar.button("■ Carregar Dados no Snowflake"):
 
     try:
@@ -86,9 +61,6 @@ if st.sidebar.button("■ Carregar Dados no Snowflake"):
 
             df = pd.read_csv(url)
 
-
-            # Remove apenas linhas sem continente
-            # (mantém o dataset completo)
             df = df.dropna(
                 subset=["continent"]
             ).reset_index(drop=True)
@@ -121,18 +93,13 @@ if st.sidebar.button("■ Carregar Dados no Snowflake"):
             f"Erro ao carregar dados:\n\n{e}"
         )
 
-# ==========================
-# CARREGAR DASHBOARD
-# ==========================
 
+# CARREGAR DASHBOARD
 if st.sidebar.button("■ Carregar Dashboard"):
 
     try:
 
         session = criar_sessao()
-
-
-        # Verifica se a tabela existe antes de tentar carregar
 
         tabelas = session.sql(
             "SHOW TABLES LIKE 'DADOS_COVID_FILTRADOS' IN SCHEMA TEST_DB.PUBLIC"
@@ -175,11 +142,7 @@ if st.sidebar.button("■ Carregar Dashboard"):
         )
 
 
-
-# ==========================
 # VERIFICAÇÃO DO DATAFRAME
-# ==========================
-
 if "df" not in st.session_state:
 
     st.info(
@@ -195,17 +158,12 @@ df = st.session_state.df
 
 
 
-# ==========================
-# FILTROS
-# ==========================
 
+# FILTROS
 st.sidebar.header("Filtros")
 
 
-# --------------------------
 # Filtro por continente
-# --------------------------
-
 lista_continentes = sorted(
     df["continent"]
     .dropna()
@@ -228,8 +186,6 @@ continente_selecionado = st.sidebar.multiselect(
 )
 
 
-# Filtra pelo continente escolhido
-
 df_continente = df[
     df["continent"].isin(
         continente_selecionado
@@ -237,10 +193,7 @@ df_continente = df[
 ]
 
 
-# --------------------------
 # Filtro por país
-# --------------------------
-
 lista_paises = sorted(
     df_continente["location"]
     .dropna()
@@ -255,7 +208,6 @@ paises_padrao = [
 ]
 
 
-# mantém somente países existentes
 paises_padrao = [
     p for p in paises_padrao
     if p in lista_paises
@@ -272,42 +224,30 @@ paises = st.sidebar.multiselect(
 )
 
 
-# Aplica filtro final
-
 df_filtrado = df_continente[
     df_continente["location"]
     .isin(paises)
 ]
-# ==========================
-# ABAS
-# ==========================
 
+
+# ABAS
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
 
     [
-
         "Evolução de novos casos",
-
         "Total de óbitos",
-
         "% Pessoas vacinadas",
-
         "% Casos",
-
         "Dados Brutos",
-
         "Query SQL"
-
     ]
 
 )
 
 
 
-# ==========================
-# TAB 1
-# ==========================
 
+# TAB 1
 with tab1:
 
 
@@ -333,10 +273,7 @@ with tab1:
 
 
 
-# ==========================
 # TAB 2
-# ==========================
-
 with tab2:
 
 
@@ -361,10 +298,7 @@ with tab2:
     )
 
 
-# ==========================
 # TAB 3 - VACINAÇÃO DOS PAÍSES SELECIONADOS
-# ==========================
-
 with tab3:
 
     st.subheader(
@@ -375,7 +309,6 @@ with tab3:
     df_vacina = df_filtrado.copy()
 
 
-    # Remove países sem dados de vacinação
     df_vacina = df_vacina.dropna(
         subset=[
             "people_fully_vaccinated_per_hundred"
@@ -393,7 +326,6 @@ with tab3:
     else:
 
 
-        # Pega o último registro disponível de cada país
         ultimo_vacina = (
             df_vacina
             .sort_values("date")
@@ -470,10 +402,7 @@ with tab3:
             )
 
 
-# ==========================
 # TAB 4
-# ==========================
-
 with tab4:
 
 
@@ -505,11 +434,7 @@ with tab4:
     )
 
 
-
-# ==========================
 # TAB 5
-# ==========================
-
 with tab5:
 
 
@@ -548,10 +473,7 @@ with tab5:
 
 
 
-# ==========================
 # TAB 6 - CONSULTA SQL
-# ==========================
-
 with tab6:
 
 
