@@ -230,8 +230,6 @@ continente_selecionado = st.sidebar.multiselect(
     lista_continentes,
 
     default=[
-        "Asia",
-        "Africa",
         "South America"
     ]
 
@@ -258,27 +256,13 @@ lista_paises = sorted(
 )
 
 
-paises_padrao = [
-    "Brazil",
-    "India",
-    "Japan"
-]
-
-
-# mantém somente países existentes
-paises_padrao = [
-    p for p in paises_padrao
-    if p in lista_paises
-]
-
-
 paises = st.sidebar.multiselect(
 
     "Selecione os países",
 
     lista_paises,
 
-    default=paises_padrao
+    default=None
 
 )
 
